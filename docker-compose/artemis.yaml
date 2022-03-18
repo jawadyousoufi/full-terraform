@@ -1,0 +1,43 @@
+version: '3'
+volumes:
+  artemislogs: {}
+  redislogs:  {}
+  redistmp: {}
+services:
+  artemis: 
+    depends_on:
+    - redis
+    - mysql
+    image: farrukhsadykov/artemis:0.0.5
+    ports:
+      - "5000:5000"
+    volumes:
+    - artemislogs:/var/log
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+  redis:
+    depends_on:
+    - mysql
+    image: redis
+    volumes:
+    - redislogs:/var/log
+    - redistmp:/tmp
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    
+    # deploy:
+    #   mode: replicated
+    #   replicas: 3
+
+
+
+#  docker-compose -f artemis.yaml config 
+#  docker-compose -f artemis.yaml up -d 
